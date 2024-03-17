@@ -21,7 +21,7 @@ SECRET_KEY = '@)0qp0!&-vht7k0wyuihr+nk-b8zrvb5j^1d@vl84cd1%)f=dz'
 DEBUG = True
 
 # Change and set this to correct IP/Domain
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [".onrender.com"]
 
 
 # Application definition
@@ -36,11 +36,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'project_settings.urls'
@@ -92,11 +94,9 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-#used in production to serve static files
-STATIC_ROOT = "/home/app/staticfiles/"
-
-#url for static files
 STATIC_URL = '/static/'
+STATIC_ROOT="staticfiles"
+STATICFILES_STORAGE="whitenoise.storage.CompressedMainfestStaticFilesStorage"
 
 STATICFILES_DIRS = [
     os.path.join(PROJECT_DIR, 'uploaded_images'),
@@ -110,26 +110,3 @@ MAX_UPLOAD_SIZE = "104857600"
 MEDIA_URL = "/media/"
 
 MEDIA_ROOT = os.path.join(PROJECT_DIR, 'uploaded_videos')
-
-#for extra logging in production environment
-if DEBUG == False:
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-            },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'log.django',
-        },
-        },
-        'loggers': {
-            'django': {
-                'handlers': ['console','file'],
-                'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
-            },
-        },
-    }
